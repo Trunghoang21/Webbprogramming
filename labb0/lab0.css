@@ -1,0 +1,29 @@
+body{
+    background-color:lightblue;
+}
+
+h1{
+    color: darkblue;
+    text-align: center;
+}
+fieldset{
+    border-radius: 7px;
+}
+form > input{
+    border-radius: 7px;
+    padding:  5px;
+    float: right;
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+}
+/* 
+    form > input is known as child combinator selector
+    It targets all input elements that are direct children of a form element.
+
+    border-radius property is used to create rounded corners of an elements's outer border edge.
+    padding property is used to generate space around the content of an element and the elements border.
+    float property is used to place an element on the left or right side of its container.
+    margin-top property is used to set a margin area on the top of an element.
+    margin-right property is used to set a margin area on the right side of an element.  
+
+*/

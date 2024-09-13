@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <title>EDAF90</title>
+    <link rel="stylesheet" href="lab0.css">
+    <script>console.log("Hello World")</script>
+    <script defer src="lab0.js" ></script>
+    <!--
+        defer attribute specifies that the script is executed when the page has finished parsing.
+        it is used to prevent the script from blocking the page load and preventing null-pointer exceptions.
+    -->
+  </head>
+  <body>
+
+    <!--
+        A value of 0 means both the user and the app can be focused on the element.  
+    -->
+    <img src="https://www.w3schools.com/favicon.ico" alt="w3schools logo">
+    <h1 tabindex="0">My own form</h1>
+    <form action="" method="POST">
+        <!-- 
+        form element creates a from that users can fill out and submit to the server. 
+        action attribute specifies where to sen the form data when the form is submitted. 
+        method attribute specifies the HTTP method (GET or POST) to be used when submitting the form data.
+
+        -->
+        <fieldset>
+        <!--
+            fieldset element is used to group related elements in a form. 
+            the legend element is used to define a caption for the fieldset element.             
+        -->
+            <legend>choose size </legend>
+            <label for="options">size</label>
+            <select id="options" name="options">
+                <option value="90">90 gram</option>
+                <option value="120">120 gram</option>
+                <option value="180">180 gram</option>
+            </select>
+        <!--
+            the select element is used to create a drop-down list. 
+            the id and name attributes are used to identify the drop-down list. 
+            the options element is used to define the available options in the drop-down list. 
+        -->
+        </fieldset>
+        <fieldset>
+            <legend>add-ons</legend>
+            <input type="checkbox" id="option1" name="option1">
+            <label for="option1">onion</label>
+            <input type="checkbox" id="option2" name="option2"> 
+            <label for="option2">tomato</label>
+            <input type="checkbox" id="option3" name="option3">
+            <label for="option3">cucumber</label>
+            <!--
+                the <input> element is used to create interactive controls for wb-based forms in order 
+                to accept data from the user. a wide variety of types of input data and control widgets are available. 
+                one of the most useful and complex element due to the sheer number of combinations of input types and attributes.   
+            -->
+        </fieldset>
+        <input type="submit" value="place order">
+    </form>
+    <div id="my-div">TODO</div>
+
+  </body>
+</html>
+<!-- 
+Check the information for html and css in W3C, which is the organization owns the HTML and CSS standards.
+
+
+-->
