@@ -1,9 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import inventory from './inventory.mjs';
 import ComposeSalad from './ComposeSalad';
+import ViewOrder from './ViewOrder';
+import { useState } from 'react';
 
 function App() {
   let extras = Object.keys(inventory).filter(name => inventory[name].extra);
+  const [saladList, setSaladList] = useState([]);
+  const updateSaladList = (newsalad) =>{
+    let updateList = [...saladList,newsalad]
+    setSaladList(updateList);
+    return updateList;
+  } 
   return (
     <div className="container py-4">
       <header className="pb-3 mb-4 border-bottom">
@@ -16,8 +24,8 @@ function App() {
           {extras.map(name => <div key={name} className="col-4">{name}</div>)}
         </div>
       </div>
-
-      <ComposeSalad inventory={inventory}></ComposeSalad>
+      <ViewOrder saladList={saladList}></ViewOrder>
+      <ComposeSalad inventory={inventory} updateSaladList={updateSaladList}></ComposeSalad>
 
       <footer className="pt-3 mt-4 text-muted border-top">
         EDAF90 - webprogrammering

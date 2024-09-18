@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import Salad from "./Salad.mjs";
+
 function ComposeSalad(props) {
   const foundationList = Object.keys(props.inventory).filter(
     (name) => props.inventory[name].foundation
@@ -36,21 +38,34 @@ function ComposeSalad(props) {
     setDressing(e.target.value);
     console.log(e.target.value);
   }
-  function handlerExtras(e){
-    // the state must be immutable. 
-    const newExtraSate = {...extras};
-    // therefore, we need to use the spread operator to make a copy of the extras state. 
-    const {name, checked } = e.target;
+  function handlerExtras(e) {
+    // the state must be immutable.
+    const newExtraSate = { ...extras };
+    // therefore, we need to use the spread operator to make a copy of the extras state.
+    const { name, checked } = e.target;
     console.log(`${name} ${checked}`);
-    if(newExtraSate[name]){
+    if (newExtraSate[name]) {
       delete newExtraSate[name];
-    }
-    else{
+    } else {
       newExtraSate[name] = checked;
     }
-    setExtra(newExtraSate); 
+    setExtra(newExtraSate);
     console.log(newExtraSate);
     //console.log(checked);
+  }
+  function handlerSubmission(e){
+    e.preventDefault();
+    let salad = new Salad();
+    salad.add(foundation, props.inventory[foundation]);
+    salad.add(protein, props.inventory[protein]);
+    salad.add(dressing, props.inventory[dressing]);
+    Object.keys(extras).map((name) => {
+      if (extras[name]){
+        salad.add(name, props.inventory[name]);
+      }
+    });
+    console.log(props.updateSaladList(salad));
+    
   }
 
   return (
@@ -58,84 +73,88 @@ function ComposeSalad(props) {
       <div className="row h-200 p-5 bg-light border rounded-3">
         <h2>Välj innehållet i din sallad</h2>
 
-        <fieldset className="col-md-12">
-          <label htmlFor="foundation" className="form-label">
-            Välj bas
-          </label>
-          <select
-            value={foundation}
-            onChange={handlerFoundation}
-            className="form-select"
-            id="foundation"
-          >
-            {foundationList.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </fieldset>
+        <form onSubmit={handlerSubmission}>
+          <fieldset className="col-md-12">
+            <label htmlFor="foundation" className="form-label">
+              Välj bas
+            </label>
+            <select
+              value={foundation}
+              onChange={handlerFoundation}
+              className="form-select"
+              id="foundation"
+            >
+              {foundationList.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </fieldset>
 
-        <fieldset className="col-md-12">
-          <label htmlFor="protein" className="form-label">
-            Välj protein
-          </label>
-          <select
-            value={protein}
-            className="form-select"
-            onChange={handlerProtein}
-            id="protein"
-          >
-            {proteinList.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </fieldset>
+          <fieldset className="col-md-12">
+            <label htmlFor="protein" className="form-label">
+              Välj protein
+            </label>
+            <select
+              value={protein}
+              className="form-select"
+              onChange={handlerProtein}
+              id="protein"
+            >
+              {proteinList.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </fieldset>
 
-        <fieldset className="col-md-12">
-          <label htmlFor="dressing" className="form-label">
-            Välj dressing
-          </label>
-          <select
-            value={dressing}
-            className="form-select"
-            onChange={handlerDressing}
-            id="dressing"
-          >
-            {dressingList.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </fieldset>
+          <fieldset className="col-md-12">
+            <label htmlFor="dressing" className="form-label">
+              Välj dressing
+            </label>
+            <select
+              value={dressing}
+              className="form-select"
+              onChange={handlerDressing}
+              id="dressing"
+            >
+              {dressingList.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </fieldset>
 
-        <fieldset className="col-md-12">
-          <label>Välj tillbehör</label>
-          <div className="row">
-            {extraList.map((name) => {
-              const isChecked = extras[name] ? true : false;
-              return (
-                <div className="form-check col-md-4" key={name}>
-                  <label htmlFor={name} className="form-check-label">
-                    {name} ({props.inventory[name].price} kr)
-                  </label>
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    defaultChecked={isChecked}
-                    name={name}
-                    id={name}
-                    key={name}
-                    onClick={handlerExtras}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </fieldset>
+          <fieldset className="col-md-12">
+            <label>Välj tillbehör</label>
+            <div className="row">
+              {extraList.map((name) => {
+                const isChecked = extras[name] ? true : false;
+                return (
+                  <div className="form-check col-md-4" key={name}>
+                    <label htmlFor={name} className="form-check-label">
+                      {name} ({props.inventory[name].price} kr)
+                    </label>
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      defaultChecked={isChecked}
+                      name={name}
+                      id={name}
+                      key={name}
+                      onClick={handlerExtras}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </fieldset>
+
+          <button type="submit" className="btn btn-primary mt-3">Beställ</button>
+        </form>
       </div>
     </div>
     /* 
@@ -143,6 +162,7 @@ function ComposeSalad(props) {
     */
 
     // onchange is added to change the displayed value of the dropdown list.
+    //TODO: add Caesar Salad - the form is pre-filled with selections for a Caesar salad.
   );
 }
 export default ComposeSalad;
