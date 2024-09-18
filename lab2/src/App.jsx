@@ -11,6 +11,13 @@ function App() {
     let updateList = [...saladList,newsalad]
     setSaladList(updateList);
     return updateList;
+  }
+  const removeSalad = (salad_id) =>{
+    let updateList = saladList.filter((salad) => salad.uuid !== salad_id);
+    setSaladList(updateList);
+    // add remove logic here!
+    return updateList;
+   
   } 
   return (
     <div className="container py-4">
@@ -18,13 +25,7 @@ function App() {
         <span className="fs-4">Min egen salladsbar</span>
       </header>
 
-      <div className="container col-12">
-        <div className="row h-200 p-5 bg-light border rounded-3">
-          <h2>Välj innehållet i din sallad</h2>
-          {extras.map(name => <div key={name} className="col-4">{name}</div>)}
-        </div>
-      </div>
-      <ViewOrder saladList={saladList}></ViewOrder>
+      <ViewOrder saladList={saladList} removeSalad={removeSalad} ></ViewOrder>
       <ComposeSalad inventory={inventory} updateSaladList={updateSaladList}></ComposeSalad>
 
       <footer className="pt-3 mt-4 text-muted border-top">
