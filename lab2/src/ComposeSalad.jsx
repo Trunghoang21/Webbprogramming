@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Salad from "./Salad.mjs";
 
@@ -53,21 +53,51 @@ function ComposeSalad(props) {
     console.log(newExtraSate);
     //console.log(checked);
   }
-  function handlerSubmission(e){
+  function handlerSubmission(e) {
     e.preventDefault();
     let salad = new Salad();
+    if(props.editMode.edit){
+      salad.uuid = props.editMode.id;
+    }
     salad.add(foundation, props.inventory[foundation]);
     salad.add(protein, props.inventory[protein]);
     salad.add(dressing, props.inventory[dressing]);
     Object.keys(extras).map((name) => {
-      if (extras[name]){
+      if (extras[name]) {
         salad.add(name, props.inventory[name]);
       }
     });
     console.log(props.updateSaladList(salad));
-    
-  }
 
+    // update to the default values:
+    setFoundation("Pasta");
+    setProtein("Rökt kalkonfilé");
+    setDressing("Ceasardressing");
+    setExtra({ Bacon: true, Fetaost: true });
+  }
+  useEffect(() => {
+    if (props.editMode.edit) {
+      let toEditSalad = props.getSalad(props.editMode.id);
+      let ingredients = toEditSalad.ingredients;
+      setFoundation(
+        Object.keys(ingredients).find((key) => ingredients[key].foundation)
+      );
+      setProtein(
+        Object.keys(ingredients).find((key) => ingredients[key].protein)
+      );
+      setDressing(
+        Object.keys(ingredients).find((key) => ingredients[key].dressing)
+      );
+      setExtra(
+        Object.keys(ingredients)
+          .filter((key) => ingredients[key].extra)
+          .reduce((acc, key) => {
+            acc[key] = true; // Set each filtered key's value to `true`
+            return acc;
+          }, {})
+      );
+    }
+  }, [props.editMode.edit]);
   return (
     <div className="container col-12">
       <div className="row h-200 p-5 bg-light border rounded-3">
@@ -141,11 +171,12 @@ function ComposeSalad(props) {
                     <input
                       type="checkbox"
                       className="form-check-input"
-                      defaultChecked={isChecked}
+                      checked={isChecked}
                       name={name}
                       id={name}
                       key={name}
-                      onClick={handlerExtras}
+                      // change onClick to onChange
+                      onChange={handlerExtras}
                     />
                   </div>
                 );
@@ -153,7 +184,9 @@ function ComposeSalad(props) {
             </div>
           </fieldset>
 
-          <button type="submit" className="btn btn-primary mt-3">Beställ</button>
+          <button type="submit" className="btn btn-primary mt-3">
+            {props.editMode.edit ? "Update Salad" : "Add Salad"}
+          </button>
         </form>
       </div>
     </div>
