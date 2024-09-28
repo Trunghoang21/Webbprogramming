@@ -40,8 +40,7 @@ class Salad {
 }
 Salad.prototype.getPrice = function () {
   return Object.values(this.ingredients).reduce((acc, cur) => {
-    const size = cur.size != null && !isNaN(cur.size) ? cur.size : 1;
-    return acc + cur.price * size;
+    return acc + cur.price;
   }, 0);
   // TODO: Discussion for the best practice here!
 };

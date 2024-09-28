@@ -3,7 +3,8 @@ import inventory from './inventory.mjs';
 import ComposeSalad from './ComposeSalad';
 import ViewOrder from './ViewOrder';
 import { useState } from 'react';
-
+import Header from './header';
+import Footer from './footer';
 function App() {
   let extras = Object.keys(inventory).filter(name => inventory[name].extra);
   const [saladList, setSaladList] = useState([]);
@@ -40,16 +41,10 @@ function App() {
   } 
   return (
     <div className="container py-4">
-      <header className="pb-3 mb-4 border-bottom">
-        <span className="fs-4">Min egen salladsbar</span>
-      </header>
-
+      <Header></Header>
       <ViewOrder saladList={saladList} removeSalad={removeSalad} modifyEditMode={modifyEditMode}></ViewOrder>
       <ComposeSalad inventory={inventory} updateSaladList={updateSaladList} getSalad={getSalad} editMode= {editMode} ></ComposeSalad>
-
-      <footer className="pt-3 mt-4 text-muted border-top">
-        EDAF90 - webprogrammering
-      </footer>
+      <Footer></Footer>
     </div>
   );
 }

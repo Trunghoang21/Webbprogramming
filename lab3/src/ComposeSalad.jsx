@@ -17,15 +17,23 @@ function ComposeSalad(props) {
   );
 
   //TODO: check if we can use the useMemo hooks here
-  const [foundation, setFoundation] = useState("Pasta");
-  const [protein, setProtein] = useState("Rökt kalkonfilé");
-  const [dressing, setDressing] = useState("Ceasardressing");
+  const [foundation, setFoundation] = useState("");
+  const [protein, setProtein] = useState("");
+  const [dressing, setDressing] = useState("");
   // The default value for the foundation will be Pasta
   // setFoundation is used to change the state of the foundation.
 
-  const [extras, setExtra] = useState({ Bacon: true, Fetaost: true });
+  const [extras, setExtra] = useState({});
   // TODO: Change the code, so the select is bound to the component state at line 5
   // TODO: add an event handler when the slect value changes
+  const [foundationClicked, setFoundationClicked] = useState(false); 
+  const [proteinClicked, setProteinClicked] = useState(false);
+  const [dressingClicked, setDressingClicked] = useState(false);   
+  const [touched, setTouched] = useState(false);
+  const handleInputClick = (setClicked) => {
+    setClicked(true);
+  };
+
   function handlerFoundation(e) {
     setFoundation(e.target.value);
     console.log(e.target.value);
@@ -53,8 +61,13 @@ function ComposeSalad(props) {
     console.log(newExtraSate);
     //console.log(checked);
   }
+ 
   function handlerSubmission(e) {
+    // add the code to check if the 
     e.preventDefault();
+    setTouched(true);
+    if(!e.target.checkValidity()){ 
+      return;}
     let salad = new Salad();
     if(props.editMode.edit){
       salad.uuid = props.editMode.id;
@@ -70,10 +83,14 @@ function ComposeSalad(props) {
     console.log(props.updateSaladList(salad));
 
     // update to the default values:
-    setFoundation("Pasta");
-    setProtein("Rökt kalkonfilé");
-    setDressing("Ceasardressing");
-    setExtra({ Bacon: true, Fetaost: true });
+    setFoundation("");
+    setProtein("");
+    setDressing("");
+    setExtra({});
+    setFoundationClicked(false);
+    setProteinClicked(false);
+    setDressingClicked(false);
+    setTouched(false);
   }
   useEffect(() => {
     if (props.editMode.edit) {
@@ -103,63 +120,79 @@ function ComposeSalad(props) {
       <div className="row h-200 p-5 bg-light border rounded-3">
         <h2>Välj innehållet i din sallad</h2>
 
-        <form onSubmit={handlerSubmission}>
+        <form className= {touched ? "was-validated" : ""} onSubmit={handlerSubmission}  noValidate>
           <fieldset className="col-md-12">
             <label htmlFor="foundation" className="form-label">
-              Välj bas
+              Select foundation
             </label>
             <select
               value={foundation}
               onChange={handlerFoundation}
+              onClick={() => handleInputClick(setFoundationClicked)}
               className="form-select"
               id="foundation"
+              required
             >
+            {/*  
+              {!foundationClicked && <option value="">Gör ditt val</option>}
+              TODO: how to make the placeholder to disappear after the first click...
+            */}
+              <option value="" disabled>Choose a foundation</option>
               {foundationList.map((name) => (
                 <option key={name} value={name}>
                   {name}
                 </option>
               ))}
             </select>
+            <div className="invalid-feedback"> Please select a valid foundation.</div>
           </fieldset>
 
           <fieldset className="col-md-12">
             <label htmlFor="protein" className="form-label">
-              Välj protein
+              Select protein
             </label>
             <select
               value={protein}
               className="form-select"
               onChange={handlerProtein}
+              onClick = {() => handleInputClick(setProteinClicked)} 
               id="protein"
+              required
             >
+              <option value="" disabled> Choose a protein</option>
               {proteinList.map((name) => (
                 <option key={name} value={name}>
                   {name}
                 </option>
               ))}
             </select>
+            <div className="invalid-feedback"> Please select a valid protein.</div>
           </fieldset>
 
           <fieldset className="col-md-12">
             <label htmlFor="dressing" className="form-label">
-              Välj dressing
+              Select dressing
             </label>
             <select
               value={dressing}
               className="form-select"
+              onClick = {() => handleInputClick(setDressingClicked)} 
               onChange={handlerDressing}
               id="dressing"
+              required
             >
+              <option value="" disabled>Choose a dressing</option>
               {dressingList.map((name) => (
                 <option key={name} value={name}>
                   {name}
                 </option>
               ))}
             </select>
+            <div className="invalid-feedback"> Please select a valid dressing.</div>
           </fieldset>
 
           <fieldset className="col-md-12">
-            <label>Välj tillbehör</label>
+            <label>Select extras</label>
             <div className="row">
               {extraList.map((name) => {
                 const isChecked = extras[name] ? true : false;
@@ -185,7 +218,7 @@ function ComposeSalad(props) {
           </fieldset>
 
           <button type="submit" className="btn btn-primary mt-3">
-            {props.editMode.edit ? "Update Salad" : "Add Salad"}
+            {props.editMode.edit ? "Update Salad" : "Add Salad" }
           </button>
         </form>
       </div>
