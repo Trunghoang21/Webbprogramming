@@ -1,21 +1,24 @@
 import { useState, useEffect } from "react";
-
+import { useOutletContext } from "react-router-dom";
 import Salad from "./Salad.mjs";
+import { useNavigate } from "react-router-dom";
 
-function ComposeSalad(props) {
-  const foundationList = Object.keys(props.inventory).filter(
-    (name) => props.inventory[name].foundation
+function ComposeSalad() {
+  const { inventory, updateSaladList, getSalad, editMode } = useOutletContext();
+  const foundationList = Object.keys(inventory).filter(
+    (name) => inventory[name].foundation
   );
-  const proteinList = Object.keys(props.inventory).filter(
-    (name) => props.inventory[name].protein
+  const proteinList = Object.keys(inventory).filter(
+    (name) => inventory[name].protein
   );
-  const dressingList = Object.keys(props.inventory).filter(
-    (name) => props.inventory[name].dressing
+  const dressingList = Object.keys( inventory).filter(
+    (name) =>  inventory[name].dressing
   );
-  const extraList = Object.keys(props.inventory).filter(
-    (name) => props.inventory[name].extra
+  const extraList = Object.keys(inventory).filter(
+    (name) => inventory[name].extra
   );
-
+  // define hook for navigation
+  const navigate = useNavigate();
   //TODO: check if we can use the useMemo hooks here
   const [foundation, setFoundation] = useState("");
   const [protein, setProtein] = useState("");
@@ -69,18 +72,18 @@ function ComposeSalad(props) {
     if(!e.target.checkValidity()){ 
       return;}
     let salad = new Salad();
-    if(props.editMode.edit){
-      salad.uuid = props.editMode.id;
+    if(editMode.edit){
+      salad.uuid = editMode.id;
     }
-    salad.add(foundation, props.inventory[foundation]);
-    salad.add(protein, props.inventory[protein]);
-    salad.add(dressing, props.inventory[dressing]);
+    salad.add(foundation, inventory[foundation]);
+    salad.add(protein, inventory[protein]);
+    salad.add(dressing, inventory[dressing]);
     Object.keys(extras).map((name) => {
       if (extras[name]) {
-        salad.add(name, props.inventory[name]);
+        salad.add(name, inventory[name]);
       }
     });
-    console.log(props.updateSaladList(salad));
+    console.log(updateSaladList(salad));
 
     // update to the default values:
     setFoundation("");
@@ -91,10 +94,12 @@ function ComposeSalad(props) {
     setProteinClicked(false);
     setDressingClicked(false);
     setTouched(false);
+    // navigate to the view-order page after a successful submission. 
+    navigate(`/view-order/confirm/${salad.uuid}`);
   }
   useEffect(() => {
-    if (props.editMode.edit) {
-      let toEditSalad = props.getSalad(props.editMode.id);
+    if (editMode.edit) {
+      let toEditSalad = getSalad(editMode.id);
       let ingredients = toEditSalad.ingredients;
       setFoundation(
         Object.keys(ingredients).find((key) => ingredients[key].foundation)
@@ -114,7 +119,7 @@ function ComposeSalad(props) {
           }, {})
       );
     }
-  }, [props.editMode.edit]);
+  }, [editMode.edit]);
   return (
     <div className="container col-12">
       <div className="row h-200 p-5 bg-light border rounded-3">
@@ -199,7 +204,7 @@ function ComposeSalad(props) {
                 return (
                   <div className="form-check col-md-4" key={name}>
                     <label htmlFor={name} className="form-check-label">
-                      {name} ({props.inventory[name].price} kr)
+                      {name} ({inventory[name].price} kr)
                     </label>
                     <input
                       type="checkbox"
@@ -218,7 +223,7 @@ function ComposeSalad(props) {
           </fieldset>
 
           <button type="submit" className="btn btn-primary mt-3">
-            {props.editMode.edit ? "Update Salad" : "Add Salad" }
+            {editMode.edit ? "Update Salad" : "Add Salad" }
           </button>
         </form>
       </div>

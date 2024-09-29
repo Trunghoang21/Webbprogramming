@@ -5,6 +5,9 @@ import ViewOrder from './ViewOrder';
 import { useState } from 'react';
 import Header from './header';
 import Footer from './footer';
+import Navbar from './Navbar';
+import { Outlet } from 'react-router-dom';
+
 function App() {
   let extras = Object.keys(inventory).filter(name => inventory[name].extra);
   const [saladList, setSaladList] = useState([]);
@@ -29,6 +32,7 @@ function App() {
     }else{
     let updateList = [...saladList,newsalad]
     setSaladList(updateList);
+    console.log(`from App: ${updateList}`);
     return updateList;
     }
   }
@@ -42,8 +46,14 @@ function App() {
   return (
     <div className="container py-4">
       <Header></Header>
+      {
+        /* 
       <ViewOrder saladList={saladList} removeSalad={removeSalad} modifyEditMode={modifyEditMode}></ViewOrder>
-      <ComposeSalad inventory={inventory} updateSaladList={updateSaladList} getSalad={getSalad} editMode= {editMode} ></ComposeSalad>
+      <ComposeSalad inventory={inventory} updateSaladList={updateSaladList} getSalad={getSalad} editMode= {editMode} ></ComposeSalad>  
+        */
+      }
+      <Navbar></Navbar>
+      <Outlet context={{saladList, removeSalad, modifyEditMode, inventory, updateSaladList, getSalad, editMode}}></Outlet>
       <Footer></Footer>
     </div>
   );

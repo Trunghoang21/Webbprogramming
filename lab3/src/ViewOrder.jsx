@@ -1,7 +1,13 @@
 import "bootstrap/dist/css/bootstrap.css";
+import { useOutletContext } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useState } from "react";
 
-export default function ViewOrder({ saladList, removeSalad, modifyEditMode}) {
+export default function ViewOrder() {
+    const {saladList, removeSalad, modifyEditMode} = useOutletContext();
+    
+    console.log(`from ViewOrder: ${saladList}`);
+    
     function handlerRemove (e){
         console.log(e.target.id);
         console.log(removeSalad(e.target.id));
@@ -30,7 +36,10 @@ export default function ViewOrder({ saladList, removeSalad, modifyEditMode}) {
             </div>
           ))
         )}
+        <Outlet context={saladList}></Outlet>
       </div>
     </div>
   );
 }
+
+
