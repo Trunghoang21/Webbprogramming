@@ -11,8 +11,8 @@ function ComposeSalad() {
   const proteinList = Object.keys(inventory).filter(
     (name) => inventory[name].protein
   );
-  const dressingList = Object.keys( inventory).filter(
-    (name) =>  inventory[name].dressing
+  const dressingList = Object.keys(inventory).filter(
+    (name) => inventory[name].dressing
   );
   const extraList = Object.keys(inventory).filter(
     (name) => inventory[name].extra
@@ -29,10 +29,12 @@ function ComposeSalad() {
   const [extras, setExtra] = useState({});
   // TODO: Change the code, so the select is bound to the component state at line 5
   // TODO: add an event handler when the slect value changes
-  const [foundationClicked, setFoundationClicked] = useState(false); 
+  const [foundationClicked, setFoundationClicked] = useState(false);
   const [proteinClicked, setProteinClicked] = useState(false);
-  const [dressingClicked, setDressingClicked] = useState(false);   
+  const [dressingClicked, setDressingClicked] = useState(false);
   const [touched, setTouched] = useState(false);
+  const [showExtrasError, setShowExtrasError] = useState(true);
+
   const handleInputClick = (setClicked) => {
     setClicked(true);
   };
@@ -62,17 +64,27 @@ function ComposeSalad() {
     }
     setExtra(newExtraSate);
     console.log(newExtraSate);
+    const length = Object.keys(newExtraSate).length;
+    // code for check the input length of the user, if the length is between 2 and 8, the error message will be hidden.
+    (length > 2 && length <= 8)
+      ? setShowExtrasError(false)
+      : setShowExtrasError(true);
+    console.log(`the length is ${length} state is set to ${showExtrasError}`);
     //console.log(checked);
   }
- 
+
   function handlerSubmission(e) {
-    // add the code to check if the 
+    // add the code to check if the
+    if(showExtrasError){
+      return;
+    }
     e.preventDefault();
     setTouched(true);
-    if(!e.target.checkValidity()){ 
-      return;}
+    if (!e.target.checkValidity()) {
+      return;
+    }
     let salad = new Salad();
-    if(editMode.edit){
+    if (editMode.edit) {
       salad.uuid = editMode.id;
     }
     salad.add(foundation, inventory[foundation]);
@@ -94,7 +106,7 @@ function ComposeSalad() {
     setProteinClicked(false);
     setDressingClicked(false);
     setTouched(false);
-    // navigate to the view-order page after a successful submission. 
+    // navigate to the view-order page after a successful submission.
     navigate(`/view-order/confirm/${salad.uuid}`);
   }
   useEffect(() => {
@@ -123,9 +135,13 @@ function ComposeSalad() {
   return (
     <div className="container col-12">
       <div className="row h-200 p-5 bg-light border rounded-3">
-        <h2>Välj innehållet i din sallad</h2>
+        <h2>Choose the content of your salad</h2>
 
-        <form className= {touched ? "was-validated" : ""} onSubmit={handlerSubmission}  noValidate>
+        <form
+          className={touched ? "was-validated" : ""}
+          onSubmit={handlerSubmission}
+          noValidate
+        >
           <fieldset className="col-md-12">
             <label htmlFor="foundation" className="form-label">
               Select foundation
@@ -138,18 +154,22 @@ function ComposeSalad() {
               id="foundation"
               required
             >
-            {/*  
+              {/*  
               {!foundationClicked && <option value="">Gör ditt val</option>}
               TODO: how to make the placeholder to disappear after the first click...
             */}
-              <option value="" disabled>Choose a foundation</option>
+              <option value="" disabled>
+                Choose a foundation
+              </option>
               {foundationList.map((name) => (
                 <option key={name} value={name}>
                   {name}
                 </option>
               ))}
             </select>
-            <div className="invalid-feedback"> Please select a valid foundation.</div>
+            <div className="invalid-feedback alert alert-danger">
+              Please select a valid foundation.
+            </div>
           </fieldset>
 
           <fieldset className="col-md-12">
@@ -160,18 +180,23 @@ function ComposeSalad() {
               value={protein}
               className="form-select"
               onChange={handlerProtein}
-              onClick = {() => handleInputClick(setProteinClicked)} 
+              onClick={() => handleInputClick(setProteinClicked)}
               id="protein"
               required
             >
-              <option value="" disabled> Choose a protein</option>
+              <option value="" disabled>
+                {" "}
+                Choose a protein
+              </option>
               {proteinList.map((name) => (
                 <option key={name} value={name}>
                   {name}
                 </option>
               ))}
             </select>
-            <div className="invalid-feedback"> Please select a valid protein.</div>
+            <div className="invalid-feedback alert alert-danger">
+              Please select a valid protein.
+            </div>
           </fieldset>
 
           <fieldset className="col-md-12">
@@ -181,19 +206,23 @@ function ComposeSalad() {
             <select
               value={dressing}
               className="form-select"
-              onClick = {() => handleInputClick(setDressingClicked)} 
+              onClick={() => handleInputClick(setDressingClicked)}
               onChange={handlerDressing}
               id="dressing"
               required
             >
-              <option value="" disabled>Choose a dressing</option>
+              <option value="" disabled>
+                Choose a dressing
+              </option>
               {dressingList.map((name) => (
                 <option key={name} value={name}>
                   {name}
                 </option>
               ))}
             </select>
-            <div className="invalid-feedback"> Please select a valid dressing.</div>
+            <div className="invalid-feedback alert alert-danger">
+              Please select a valid dressing.
+            </div>
           </fieldset>
 
           <fieldset className="col-md-12">
@@ -220,10 +249,15 @@ function ComposeSalad() {
                 );
               })}
             </div>
+              {showExtrasError ? (
+                <div className="alert alert-danger">
+                  Please select between 3 and 8 extras.
+              </div>
+              ) :"" }
           </fieldset>
 
           <button type="submit" className="btn btn-primary mt-3">
-            {editMode.edit ? "Update Salad" : "Add Salad" }
+            {editMode.edit ? "Update Salad" : "Add Salad"}
           </button>
         </form>
       </div>

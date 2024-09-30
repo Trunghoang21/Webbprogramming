@@ -13,7 +13,7 @@ export default function ViewOrderConfirm() {
         );
     }
     return (
-        <div>
+        <div className="alert alert-info">
             <p>Order confirm:</p>
             <p>Salad with id {newSalad.uuid} has been added</p>
         </div>
