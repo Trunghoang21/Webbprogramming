@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import Salad from "./Salad.mjs";
+import {useLoaderData} from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 function ComposeSalad() {
-  const { inventory, updateSaladList, getSalad, editMode } = useOutletContext();
+  const { updateSaladList, getSalad, editMode } = useOutletContext();
+  const inventory = useLoaderData();
   const foundationList = Object.keys(inventory).filter(
     (name) => inventory[name].foundation
   );

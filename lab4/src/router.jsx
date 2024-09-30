@@ -2,13 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import ComposeSalad from "./ComposeSalad";
 import ViewOrder from "./ViewOrder";
-import ViewOrderConfirm from "./ViewOrderConfirm"; 
+import ViewOrderConfirm from "./ViewOrderConfirm";
+import {inventoryLoader} from "./saladBarLoader";
 const router = createBrowserRouter([
   {
     Component: App,
     children: [
       {
         path: "compose-salad",
+        loader: inventoryLoader,
         Component: ComposeSalad,
       },
       {
