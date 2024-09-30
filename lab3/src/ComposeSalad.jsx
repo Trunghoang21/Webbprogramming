@@ -75,11 +75,11 @@ function ComposeSalad() {
 
   function handlerSubmission(e) {
     // add the code to check if the
+    e.preventDefault();
+    setTouched(true);
     if(showExtrasError){
       return;
     }
-    e.preventDefault();
-    setTouched(true);
     if (!e.target.checkValidity()) {
       return;
     }
