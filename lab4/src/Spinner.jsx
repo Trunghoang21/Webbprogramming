@@ -1,4 +1,4 @@
-export default function Spinner() {
+export default function Spinner({orderConfimation}) {
     return (
         (
             <div className="d-flex justify-content-center">

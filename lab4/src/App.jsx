@@ -4,12 +4,19 @@ import Header from './header';
 import Footer from './footer';
 import Navbar from './Navbar';
 import Spinner from './Spinner';
+import Salad from "./Salad.mjs";
 import {Outlet} from 'react-router-dom';
 import {useNavigation} from 'react-router-dom';
 
 function App() {
+    // Initialize the salad list once from the local storage.
+    const initialSaladList = () => {
+        const shoppingcart = window.localStorage.getItem('shoppingCart');
+        console.log(`from App.jsx: ${shoppingcart}`);
+        return shoppingcart ? Salad.parse(shoppingcart) : [];
+    }
 
-    const [saladList, setSaladList] = useState([]);
+    const [saladList, setSaladList] = useState(initialSaladList);
     const [editMode, setEditMode] = useState({edit: false, id: ''});
     const navigation = useNavigation()
 
@@ -32,7 +39,9 @@ function App() {
         } else {
             let updateList = [...saladList, newsalad]
             setSaladList(updateList);
-            console.log(`from App: ${updateList}`);
+            console.log(`from App updateSaladList: ${updateList}`);
+            // logic for adding salad_list to the local Storage.
+            window.localStorage.setItem('shoppingCart', JSON.stringify(updateList));
             return updateList;
         }
     }

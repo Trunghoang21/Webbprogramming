@@ -1,10 +1,13 @@
 import "bootstrap/dist/css/bootstrap.css";
 import {useOutletContext} from "react-router-dom";
 import {Outlet} from "react-router-dom";
+import Toast from "./Toast.jsx";
 import {useState} from "react";
 
 export default function ViewOrder() {
     const {saladList, removeSalad, modifyEditMode} = useOutletContext();
+    const [showToast, setShowToast] = useState(false);
+    const [orderConfirmation, setOrderConfirmation] = useState({});
 
     //console.log(`from ViewOrder: ${saladList}`);
 
@@ -14,7 +17,7 @@ export default function ViewOrder() {
     }
 
     function handlerEdit(e) {
-        modifyEditMode({edit: true, id: e.target.id})
+        modifyEditMode({edit: true, id: e.target.id});
         console.log(e.target.id);
     }
 
@@ -31,8 +34,15 @@ export default function ViewOrder() {
                 body: JSON.stringify(data),
             })
             .then(response => response.json())
-            .then(data => console.log(`response from POST method ${JSON.stringify(data)}`))
+            .then(data => {
+                console.log(`response from POST method ${JSON.stringify(data)}`);
+                setOrderConfirmation(data);
+            })
             .catch(error => console.log(error));
+        //ToDo: fix the logic later on. The toast should be shown after the order is sent to the server.
+        // the information of the order should be shown in the toast.
+        //setOrderConfirmation(data);
+        setShowToast(true);
     }
 
     return (
@@ -56,6 +66,11 @@ export default function ViewOrder() {
                     ))
                 )}
                 <Outlet context={saladList}></Outlet>
+                <Toast
+                    orderConfirmation={orderConfirmation}
+                    setShowToast={setShowToast}
+                    showToast={showToast}>
+                </Toast>
             </div>
             <button className="btn btn-primary mt-2" onClick={handlerOrder}>
                 Order
